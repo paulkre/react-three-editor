@@ -1,6 +1,18 @@
 {
   "name": "react-three-editor",
   "description": "Visual editor for creating animations with React Three Fiber",
+  "keywords": [
+    "react",
+    "three",
+    "fiber",
+    "motion",
+    "graphics",
+    "animation",
+    "editor",
+    "rendering",
+    "exporter",
+    "timeline"
+  ],
   "repository": "https://github.com/paulkre/react-three-editor.git",
   "author": "Paul Kretschel <paul.kretschel@icloud.com>",
   "license": "MIT",
