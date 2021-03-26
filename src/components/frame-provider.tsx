@@ -4,6 +4,7 @@ import { useFrame as useThreeFrame } from "react-three-fiber";
 type FrameContext = {
   time: number;
   delta: number;
+  frame: number;
 };
 
 type FrameCallback = (ctx: FrameContext) => void;
@@ -61,8 +62,12 @@ export const FrameProvider: React.FC<{
     if (!subs.length) return;
 
     let time = Math.floor(frame * (1000 / frameRate));
+    let currentFrame = frame;
 
-    if (isPlaying) time = (time + Date.now() - playStart) % durationMs;
+    if (isPlaying) {
+      time = (time + Date.now() - playStart) % durationMs;
+      currentFrame = Math.floor((time % durationMs) / (1000 / frameRate));
+    }
 
     if (time === lastTimeRef.current) return;
 
@@ -70,7 +75,9 @@ export const FrameProvider: React.FC<{
     const delta = time - lastTimeRef.current;
     lastTimeRef.current = time;
 
-    subs.forEach(({ ref }) => ref.current({ time, delta }));
+    subs.forEach(({ ref }) =>
+      ref.current({ time, delta, frame: currentFrame })
+    );
   });
 
   return <Context.Provider value={manager}>{children}</Context.Provider>;
