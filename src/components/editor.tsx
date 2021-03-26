@@ -7,15 +7,22 @@ import { Settings } from "./settings";
 import { Timeline } from "./timeline";
 import { FrameProvider } from "./frame-provider";
 
-const Scene: React.FC<{ background: Background }> = ({
-  children,
-  background,
-}) => {
-  const { scene } = useThree();
+const Scene: React.FC<{
+  background: Background;
+  setCanvas(canvas: HTMLCanvasElement): void;
+}> = ({ children, background, setCanvas }) => {
+  const {
+    scene,
+    gl: { domElement },
+  } = useThree();
 
   React.useEffect(() => {
     scene.background = background.active ? new Color(background.color) : null;
   }, [scene, background]);
+
+  React.useEffect(() => {
+    setCanvas(domElement);
+  }, [domElement, setCanvas]);
 
   return <>{children}</>;
 };
@@ -27,6 +34,7 @@ export const Editor: React.FC<ContainerProps> = ({
   const [
     resolution,
     background,
+    setCanvas,
     frame,
     isPlaying,
     frameRate,
@@ -35,6 +43,7 @@ export const Editor: React.FC<ContainerProps> = ({
   ] = useStore((state) => [
     state.resolution,
     state.background,
+    state.setCanvas,
     state.frame,
     state.isPlaying,
     state.frameRate,
@@ -53,6 +62,10 @@ export const Editor: React.FC<ContainerProps> = ({
                 width: `${resolution[0]}px`,
                 height: `${resolution[1]}px`,
               }}
+              gl={{
+                ...canvasProps.gl,
+                preserveDrawingBuffer: true,
+              }}
             >
               <FrameProvider
                 frame={frame}
@@ -61,7 +74,9 @@ export const Editor: React.FC<ContainerProps> = ({
                 durationMs={durationMs}
                 playStart={playStart}
               >
-                <Scene background={background}>{children}</Scene>
+                <Scene background={background} setCanvas={setCanvas}>
+                  {children}
+                </Scene>
               </FrameProvider>
             </Canvas>
           </div>

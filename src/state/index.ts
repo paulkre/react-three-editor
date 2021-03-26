@@ -15,11 +15,16 @@ export type Background = {
 export type State = PlaybackState &
   TimeRangeState & {
     resolution: Resolution;
+    setResolution(value: Resolution): void;
+
     background: Background;
+    setBackground(value: Background): void;
+
     frame: number;
     setFrame(frame: number): void;
-    setResolution(value: Resolution): void;
-    setBackground(value: Background): void;
+
+    canvas: HTMLCanvasElement | null;
+    setCanvas(canvas: HTMLCanvasElement): void;
   };
 
 export type StateCreator<T> = (set: SetState<State>) => T;
@@ -34,17 +39,8 @@ export const useStore = create<State>(
       return {
         ...playbackStateCreator(set),
         ...timeRangeStateCreator(set),
+
         resolution: [512, 512],
-        background: {
-          active: true,
-          color: "black",
-        },
-        timeRange: {
-          duration: 5,
-          frameRate: 50,
-          frameCount: 250,
-        },
-        frame: 0,
         setResolution: ([width, height]) => {
           if (isNaN(width) || isNaN(height)) return;
           set((state) => ({
@@ -52,11 +48,18 @@ export const useStore = create<State>(
             resolution: [parseDimension(width), parseDimension(height)],
           }));
         },
+
+        background: {
+          active: true,
+          color: "black",
+        },
         setBackground: (background) =>
           set((state) => ({
             ...state,
             background,
           })),
+
+        frame: 0,
         setFrame(frame) {
           set((state) => ({
             ...state,
@@ -68,8 +71,15 @@ export const useStore = create<State>(
                 ),
           }));
         },
+
+        canvas: null,
+        setCanvas: (canvas) =>
+          set((state) => ({
+            ...state,
+            canvas,
+          })),
       };
     },
-    { name: "REACT_THREE_FIBER_PLAYGROUND", blacklist: ["isPlaying"] }
+    { name: "REACT_THREE_FIBER_PLAYGROUND", blacklist: ["canvas", "isPlaying"] }
   )
 );

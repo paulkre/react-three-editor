@@ -2,6 +2,7 @@ import React from "react";
 import { BackgroundSettings } from "./background";
 import { ResolutionSettings } from "./resolution";
 import { TimeRangeSettings } from "./time-range";
+import { RenderSettings } from "./render";
 
 export const Heading: React.FC = ({ children }) => (
   <div className="uppercase tracking-wide mb-3 select-none text-lg">
@@ -19,7 +20,10 @@ export const Settings: React.FC = () => {
         <div className="mb-8">
           <BackgroundSettings />
         </div>
-        <TimeRangeSettings />
+        <div className="mb-8">
+          <TimeRangeSettings />
+        </div>
+        <RenderSettings />
       </div>
     </div>
   );
