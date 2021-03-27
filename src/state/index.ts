@@ -4,6 +4,7 @@ import type { SetState } from "zustand";
 
 import { playbackStateCreator, PlaybackState } from "./playback";
 import { timeRangeStateCreator, TimeRangeState } from "./time-range";
+import { renderingStateCreator, RenderingState } from "./rendering";
 
 export type Resolution = [number, number];
 
@@ -13,7 +14,8 @@ export type Background = {
 };
 
 export type State = PlaybackState &
-  TimeRangeState & {
+  TimeRangeState &
+  RenderingState & {
     resolution: Resolution;
     setResolution(value: Resolution): void;
 
@@ -39,6 +41,7 @@ export const useStore = create<State>(
       return {
         ...playbackStateCreator(set),
         ...timeRangeStateCreator(set),
+        ...renderingStateCreator(set),
 
         resolution: [512, 512],
         setResolution: ([width, height]) => {
