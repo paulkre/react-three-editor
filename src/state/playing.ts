@@ -1,29 +1,28 @@
-import { StateCreator } from ".";
+import { AppMode, StateCreator } from ".";
 
-export type PlaybackState = {
-  isPlaying: boolean;
+export type PlayingState = {
   playStart: number;
   startPlaying(): void;
   stopPlaying(): void;
 };
 
-export const playbackStateCreator: StateCreator<PlaybackState> = (set) => ({
+export const playingStateCreator: StateCreator<PlayingState> = (set) => ({
   isPlaying: false,
   playStart: 0,
   startPlaying() {
     set((state) =>
-      state.isPlaying
+      state.mode !== AppMode.Paused
         ? state
         : {
             ...state,
-            isPlaying: true,
+            mode: AppMode.Playing,
             playStart: Date.now(),
           }
     );
   },
   stopPlaying: () => {
     set((state) => {
-      if (!state.isPlaying) return state;
+      if (state.mode !== AppMode.Playing) return state;
 
       const frameMs = Math.floor(state.frame * (1000 / state.frameRate));
       const totalMs = Math.floor(state.duration.ms);
@@ -31,7 +30,7 @@ export const playbackStateCreator: StateCreator<PlaybackState> = (set) => ({
 
       return {
         ...state,
-        isPlaying: false,
+        mode: AppMode.Paused,
         frame: Math.floor((ms % totalMs) / (1000 / state.frameRate)),
       };
     });

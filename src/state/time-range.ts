@@ -1,4 +1,4 @@
-import { StateCreator } from ".";
+import { AppMode, StateCreator } from ".";
 
 export type TimeRangeState = {
   duration: {
@@ -17,27 +17,33 @@ export const timeRangeStateCreator: StateCreator<TimeRangeState> = (set) => ({
     frames: 250,
   },
   frameRate: 50,
-  setTimeRange: (durationSeconds, frameRate) => {
-    if (isNaN(durationSeconds) || isNaN(frameRate)) return;
+  setTimeRange: (durationSeconds, frameRate) =>
+    set((state) => {
+      if (
+        state.mode !== AppMode.Paused ||
+        isNaN(durationSeconds) ||
+        isNaN(frameRate)
+      )
+        return state;
 
-    frameRate = Math.max(1, Math.floor(frameRate));
-    durationSeconds = Math.max(0.1, durationSeconds);
+      frameRate = Math.max(1, Math.floor(frameRate));
+      durationSeconds = Math.max(0.1, durationSeconds);
 
-    const fracFrames = Math.ceil((durationSeconds % 1) * frameRate);
-    const fracMs = Math.floor((1000 / frameRate) * fracFrames);
-    const ms = 1000 * Math.floor(durationSeconds) + fracMs;
+      const fracFrames = Math.ceil((durationSeconds % 1) * frameRate);
+      const fracMs = Math.floor((1000 / frameRate) * fracFrames);
+      const ms = 1000 * Math.floor(durationSeconds) + fracMs;
 
-    const frameCount = frameRate * Math.floor(durationSeconds) + fracFrames;
+      const frameCount = frameRate * Math.floor(durationSeconds) + fracFrames;
 
-    set((state) => ({
-      ...state,
-      frame: Math.min(state.frame, frameCount - 1),
-      frameRate,
-      duration: {
-        ms,
-        seconds: ms / 1000,
-        frames: frameCount,
-      },
-    }));
-  },
+      return {
+        ...state,
+        frame: Math.min(state.frame, frameCount - 1),
+        frameRate,
+        duration: {
+          ms,
+          seconds: ms / 1000,
+          frames: frameCount,
+        },
+      };
+    }),
 });

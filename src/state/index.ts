@@ -2,9 +2,15 @@ import create from "zustand";
 import { persist } from "zustand/middleware";
 import type { SetState } from "zustand";
 
-import { playbackStateCreator, PlaybackState } from "./playback";
+import { playingStateCreator, PlayingState } from "./playing";
 import { timeRangeStateCreator, TimeRangeState } from "./time-range";
 import { renderingStateCreator, RenderingState } from "./rendering";
+
+export enum AppMode {
+  Paused,
+  Playing,
+  Rendering,
+}
 
 export type Resolution = [number, number];
 
@@ -13,9 +19,11 @@ export type Background = {
   color: string;
 };
 
-export type State = PlaybackState &
+export type State = PlayingState &
   TimeRangeState &
   RenderingState & {
+    mode: AppMode;
+
     resolution: Resolution;
     setResolution(value: Resolution): void;
 
@@ -39,28 +47,36 @@ export const useStore = create<State>(
   persist(
     (set) => {
       return {
-        ...playbackStateCreator(set),
+        ...playingStateCreator(set),
         ...timeRangeStateCreator(set),
         ...renderingStateCreator(set),
 
+        mode: AppMode.Paused,
+
         resolution: [512, 512],
-        setResolution: ([width, height]) => {
-          if (isNaN(width) || isNaN(height)) return;
-          set((state) => ({
-            ...state,
-            resolution: [parseDimension(width), parseDimension(height)],
-          }));
-        },
+        setResolution: ([width, height]) =>
+          set((state) =>
+            state.mode === AppMode.Rendering || isNaN(width) || isNaN(height)
+              ? state
+              : {
+                  ...state,
+                  resolution: [parseDimension(width), parseDimension(height)],
+                }
+          ),
 
         background: {
           active: true,
           color: "black",
         },
         setBackground: (background) =>
-          set((state) => ({
-            ...state,
-            background,
-          })),
+          set((state) =>
+            state.mode === AppMode.Rendering
+              ? state
+              : {
+                  ...state,
+                  background,
+                }
+          ),
 
         frame: 0,
         setFrame(frame) {
@@ -83,6 +99,9 @@ export const useStore = create<State>(
           })),
       };
     },
-    { name: "REACT_THREE_FIBER_PLAYGROUND", blacklist: ["canvas", "isPlaying"] }
+    {
+      name: "REACT_THREE_FIBER_PLAYGROUND",
+      blacklist: ["canvas", "mode"],
+    }
   )
 );

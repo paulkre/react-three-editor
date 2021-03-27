@@ -1,35 +1,50 @@
-import { StateCreator } from ".";
+import { AppMode, StateCreator } from ".";
+
+export enum RenderMode {
+  Download,
+  Server,
+}
 
 export type RenderingState = {
-  isRendering: boolean;
+  renderMode: RenderMode;
   startRendering(): void;
   renderNext(): void;
+  setRenderMode(mode: RenderMode): void;
 };
 
 export const renderingStateCreator: StateCreator<RenderingState> = (set) => ({
   isRendering: false,
+  renderMode: RenderMode.Download,
   startRendering() {
     set((state) =>
-      state.isRendering
+      state.mode !== AppMode.Paused
         ? state
         : {
             ...state,
-            isPlaying: false,
+            mode: AppMode.Rendering,
             frame: 0,
-            isRendering: true,
           }
     );
   },
   renderNext() {
     set((state) =>
-      !state.isRendering || state.isPlaying
+      state.mode !== AppMode.Rendering
         ? state
         : state.frame < state.duration.frames - 1
         ? {
             ...state,
             frame: state.frame + 1,
           }
-        : { ...state, isRendering: false }
+        : { ...state, mode: AppMode.Paused }
     );
   },
+  setRenderMode: (renderMode) =>
+    set((state) =>
+      state.mode === AppMode.Rendering
+        ? state
+        : {
+            ...state,
+            renderMode,
+          }
+    ),
 });

@@ -1,5 +1,5 @@
 import React from "react";
-import { useStore } from "../../state";
+import { AppMode, useStore } from "../../state";
 
 const Background: React.FC = () => {
   const [frameCount, frameRate] = useStore((state) => [
@@ -89,7 +89,7 @@ const Pointer: React.FC = () => {
     state.frame,
     state.frameRate,
     state.setFrame,
-    state.isPlaying,
+    state.mode === AppMode.Playing,
     state.stopPlaying,
     state.playStart,
   ]);

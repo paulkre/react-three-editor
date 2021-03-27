@@ -2,7 +2,7 @@ import React from "react";
 import { Canvas, ContainerProps, useThree } from "react-three-fiber";
 import { Color } from "three";
 
-import { useStore, Background } from "../state";
+import { useStore, Background, AppMode } from "../state";
 import { Settings } from "./settings";
 import { Timeline } from "./timeline";
 import { FrameProvider } from "./frame-provider";
@@ -45,7 +45,7 @@ export const Editor: React.FC<ContainerProps> = ({
     state.background,
     state.setCanvas,
     state.frame,
-    state.isPlaying,
+    state.mode === AppMode.Playing,
     state.frameRate,
     state.duration.ms,
     state.playStart,

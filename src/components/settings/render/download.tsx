@@ -1,7 +1,7 @@
 import React from "react";
 import { saveAs } from "file-saver";
 
-import { useStore } from "../../../state";
+import { AppMode, useStore } from "../../../state";
 
 function base64ToBlob(b64Data: string, contentType = "", sliceSize = 512) {
   const byteCharacters = atob(b64Data);
@@ -32,7 +32,7 @@ export const DownloadRender: React.FC = () => {
     state.duration.frames,
     state.canvas,
     state.frame,
-    state.isRendering,
+    state.mode === AppMode.Rendering,
     state.startRendering,
     state.renderNext,
   ]);

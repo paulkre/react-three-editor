@@ -1,11 +1,11 @@
 import React from "react";
-import { useStore } from "../../state";
+import { AppMode, useStore } from "../../state";
 
 import { TimeSlider } from "./slider";
 
 const PlayButton: React.FC = () => {
   const [isPlaying, startPlaying, stopPlaying] = useStore((state) => [
-    state.isPlaying,
+    state.mode === AppMode.Playing,
     state.startPlaying,
     state.stopPlaying,
   ]);
