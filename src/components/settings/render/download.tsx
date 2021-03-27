@@ -2,6 +2,7 @@ import React from "react";
 import { saveAs } from "file-saver";
 
 import { AppMode, useStore } from "../../../state";
+import { Button, ButtonVariant } from "../button";
 
 function base64ToBlob(b64Data: string, contentType = "", sliceSize = 512) {
   const byteCharacters = atob(b64Data);
@@ -27,6 +28,7 @@ export const DownloadRender: React.FC = () => {
     frame,
     isRendering,
     startRendering,
+    stopRendering,
     renderNext,
   ] = useStore((state) => [
     state.duration.frames,
@@ -34,6 +36,7 @@ export const DownloadRender: React.FC = () => {
     state.frame,
     state.mode === AppMode.Rendering,
     state.startRendering,
+    state.stopRendering,
     state.renderNext,
   ]);
   const lastDownloadTimeRef = React.useRef(0);
@@ -41,12 +44,11 @@ export const DownloadRender: React.FC = () => {
   React.useEffect(() => {
     if (!isRendering || !canvas) return;
 
-    const now = Date.now();
     const cooldown = Math.max(
       0,
-      downloadCoolDown + lastDownloadTimeRef.current - now
+      downloadCoolDown + lastDownloadTimeRef.current - Date.now()
     );
-    lastDownloadTimeRef.current = now;
+    console.log(cooldown);
 
     setTimeout(() => {
       const data = canvas
@@ -54,22 +56,21 @@ export const DownloadRender: React.FC = () => {
         .replace(/^data:image\/png;base64,/, "");
       saveAs(
         base64ToBlob(data, "image/png"),
-        `${frame
+        `${(frame + 1)
           .toString()
           .padStart(frameCount.toString().length + 1, "0")}.png`
       );
 
+      lastDownloadTimeRef.current = Date.now();
       renderNext();
     }, cooldown);
   }, [frameCount, isRendering, frame, renderNext, canvas]);
 
-  return (
-    <button
-      className="border-2 border-gray-700 px-3 uppercase py-2 transition hover:bg-gray-300 hover:border-gray-300 hover:text-gray-900"
-      disabled={!canvas}
-      onClick={startRendering}
-    >
-      Start
-    </button>
+  return isRendering ? (
+    <Button onClick={stopRendering} variant={ButtonVariant.Cancel}>
+      Stop
+    </Button>
+  ) : (
+    <Button onClick={startRendering}>Start</Button>
   );
 };

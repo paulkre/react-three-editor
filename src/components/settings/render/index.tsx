@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Heading } from "..";
-import { AppMode, useStore } from "../../../state";
+import { useStore } from "../../../state";
 import { RenderMode } from "../../../state/rendering";
 import { DownloadRender } from "./download";
 

@@ -8,6 +8,7 @@ export enum RenderMode {
 export type RenderingState = {
   renderMode: RenderMode;
   startRendering(): void;
+  stopRendering(): void;
   renderNext(): void;
   setRenderMode(mode: RenderMode): void;
 };
@@ -23,6 +24,16 @@ export const renderingStateCreator: StateCreator<RenderingState> = (set) => ({
             ...state,
             mode: AppMode.Rendering,
             frame: 0,
+          }
+    );
+  },
+  stopRendering() {
+    set((state) =>
+      state.mode !== AppMode.Rendering
+        ? state
+        : {
+            ...state,
+            mode: AppMode.Paused,
           }
     );
   },
