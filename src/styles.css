@@ -2,11 +2,10 @@
   body {
     @apply bg-gray-900 text-gray-50;
   }
-  button {
+  button,
+  input,
+  select {
     @apply outline-none focus:outline-none;
-  }
-  input {
-    @apply focus:outline-none;
   }
 }
 
