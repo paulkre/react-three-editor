@@ -7,6 +7,8 @@ export enum RenderMode {
 
 export type RenderingState = {
   renderMode: RenderMode;
+  outDir: string;
+  setOutDir(value: string): void;
   startRendering(): void;
   stopRendering(): void;
   renderNext(): void;
@@ -16,6 +18,16 @@ export type RenderingState = {
 export const renderingStateCreator: StateCreator<RenderingState> = (set) => ({
   isRendering: false,
   renderMode: RenderMode.Download,
+  outDir: "out/",
+  setOutDir: (value) =>
+    set((state) =>
+      state.mode === AppMode.Rendering || !value
+        ? state
+        : {
+            ...state,
+            outDir: value,
+          }
+    ),
   startRendering() {
     set((state) =>
       state.mode !== AppMode.Paused

@@ -18,17 +18,22 @@
   "license": "MIT",
   "version": "0.1.1",
   "main": "lib/index.js",
+  "bin": "lib/bin/index.js",
   "dependencies": {
+    "b64-to-blob": "^1.2.19",
     "classnames": "^2.2.6",
     "file-saver": "^2.0.5",
+    "mkdirp": "^1.0.4",
     "react": "^17.0.2",
     "react-color": "^2.19.3",
     "react-three-fiber": "^5.3.21",
     "three": "^0.126.1",
+    "ws": "^7.4.4",
     "zustand": "^3.3.3"
   },
   "scripts": {
     "start": "yarn --cwd app start",
+    "start-server": "ts-node src/bin",
     "build": "rimraf lib && yarn build:ts && yarn build:css",
     "build:ts": "tsc",
     "build:css": "cross-env NODE_ENV=production postcss -o lib/styles.css src/styles.css"
@@ -65,11 +70,13 @@
     "@types/classnames": "^2.2.11",
     "@types/file-saver": "^2.0.1",
     "@types/jest": "^26.0.15",
+    "@types/mkdirp": "^1.0.1",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-color": "^3.0.4",
     "@types/react-dom": "^17.0.0",
     "@types/three": "^0.126.1",
+    "@types/ws": "^7.4.0",
     "autoprefixer": "^9",
     "cross-env": "^7.0.3",
     "cssnano": "^4.1.10",
@@ -80,6 +87,7 @@
     "react-scripts": "4.0.3",
     "rimraf": "^3.0.2",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   }
