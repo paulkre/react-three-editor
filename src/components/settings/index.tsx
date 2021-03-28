@@ -15,7 +15,7 @@ export const Settings: React.FC = () => {
   const [shown, setShown] = React.useState(false);
 
   return (
-    <div className="h-full pt-20 text-gray-400">
+    <div className="h-full pt-20 text-gray-400 select-none">
       <button
         className={cn(
           "appearance-none fixed top-6 right-6 px-8 py-4 bg-gray-100 rounded-full uppercase tracking-wider font-semibold transition duration-500 hover:bg-gray-200 hover:text-gray-500",
@@ -27,7 +27,7 @@ export const Settings: React.FC = () => {
       </button>
       <div
         className={cn(
-          "w-full h-full p-6 overflow-hidden select-none transform transition-all duration-500",
+          "w-full h-full p-6 overflow-hidden transform transition-all duration-500",
           shown ? "max-w-7xl" : "max-w-0 translate-x-full pointer-events-none"
         )}
       >

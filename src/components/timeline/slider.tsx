@@ -37,26 +37,31 @@ const Background: React.FC = () => {
         agg++;
         fc /= agg;
         fr /= agg;
-        d = (canvas.width - 2) / fc;
+        d = (canvas.width - 4) / fc;
+      }
+
+      const hh = canvas.height / 2;
+
+      function line(x: number, l: number) {
+        ctx.moveTo(x, hh - l);
+        ctx.lineTo(x, hh + l);
       }
 
       ctx.lineWidth = 1;
       ctx.strokeStyle = "#4B5563";
       ctx.beginPath();
       for (let i = 0; i < fc; i++) {
-        const x = 1 + i * d;
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, i % 2 === 0 ? 10 : 6);
+        const x = 2 + i * d;
+        line(x, i % 2 === 0 ? 4 : 2);
       }
       ctx.stroke();
 
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#D1D5DB";
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#1EA7FD";
       ctx.beginPath();
       for (let i = 0; i < fc; i += fr) {
-        const x = 1 + i * d;
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, 18);
+        const x = 2 + i * d;
+        line(x, 12);
       }
       ctx.stroke();
     }
@@ -179,21 +184,27 @@ const Pointer: React.FC = () => {
         ref={buttonRef}
         onKeyDown={(evt) => evt.preventDefault()}
       />
-      <div
-        className="absolute left-0 inset-y-0 pointer-events-none bg-cyan-700"
-        style={{
-          left: `${100 * (frame / frameCount)}%`,
-          width: domRect ? `${100 / frameCount}%` : 0,
-        }}
-        ref={pointerRef}
-      />
+      <div className="absolute inset-0 px-0.5 pointer-events-none">
+        <div className="relative h-full">
+          <div
+            className="absolute left-0 top-1/2"
+            style={{
+              left: `${100 * (frame / frameCount)}%`,
+              width: domRect ? `${100 / frameCount}%` : 0,
+            }}
+            ref={pointerRef}
+          >
+            <div className="w-4 h-4 -mt-2 -ml-2 rounded-full bg-gray-600"></div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
 export const TimeSlider: React.FC = () => {
   return (
-    <div className="relative h-full overflow-hidden">
+    <div className="relative h-full">
       <Background />
       <Pointer />
     </div>

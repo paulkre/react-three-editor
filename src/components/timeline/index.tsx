@@ -21,7 +21,7 @@ const PlayButton: React.FC = () => {
 
   return (
     <button
-      className="appearance-none text-gray-400 transition w-10 h-10 p-2 hover:text-gray-300"
+      className="appearance-none text-action transition w-12 h-12 p-3"
       onClick={isPlaying ? stopPlaying : startPlaying}
       onKeyUp={(evt) => evt.preventDefault()}
     >
@@ -45,11 +45,11 @@ const PlayButton: React.FC = () => {
 };
 
 export const Timeline: React.FC = () => (
-  <div className="h-10 bg-black bg-opacity-25 flex border-t-2 border-black box-content">
+  <div className="h-12 flex box-content">
     <div>
       <PlayButton />
     </div>
-    <div className="flex-1 bg-black bg-opacity-25 pl-4">
+    <div className="flex-1 pl-4 overflow-hidden">
       <TimeSlider />
     </div>
   </div>

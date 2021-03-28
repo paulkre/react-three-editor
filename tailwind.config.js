@@ -6,10 +6,6 @@ module.exports = {
       colors: {
         action: "#1EA7FD",
       },
-      boxShadow: {
-        viewer:
-          "0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15)",
-      },
       backgroundImage: {
         alpha0:
           "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAA+SURBVHgB7dQxCgAgDATBKHai/3+nUVv9glfYhN36YIpAks99TGj4UuaW7XMAAAARgKL+lt6qtOcGAAAAD132Zgno1nuxuwAAAABJRU5ErkJggg==')",
