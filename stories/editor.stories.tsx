@@ -1,8 +1,6 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react";
-import { Editor } from "../src/components/editor";
-
-import { useFrame } from "../src/components/frame-provider";
+import { Editor, useFrame } from "../src";
 import type { Mesh } from "three";
 
 const Sketch: React.FC = () => {

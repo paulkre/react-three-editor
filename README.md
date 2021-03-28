@@ -9,7 +9,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import { Editor, useFrame } from "react-three-editor";
-import "react-three-editor/styles.css";
 
 const Box = () => {
   const ref = React.useRef(null);

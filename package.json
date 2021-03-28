@@ -35,7 +35,7 @@
     "start-server": "ts-node src/bin",
     "build": "rimraf lib && yarn build:ts && yarn build:css",
     "build:ts": "tsc",
-    "build:css": "cross-env NODE_ENV=production postcss -o lib/styles.css src/styles.css"
+    "build:css": "cross-env NODE_ENV=production postcss -o lib/index.css src/index.css"
   },
   "eslintConfig": {
     "extends": [
