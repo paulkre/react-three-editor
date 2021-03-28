@@ -14,7 +14,7 @@ export const TextField: React.FC<
       {...props}
       type="text"
       className={cn(
-        "appearance-none bg-black border border-gray-600 px-4 py-2 w-24 text-gray-50 focus:outline-none focus:border-gray-600",
+        "appearance-none bg-gray-200 border-2 border-gray-400 px-4 py-2 w-24 text-gray-900 focus:outline-none",
         className
       )}
       value={focussing ? innerValue : value}

@@ -19,7 +19,7 @@ export const RenderSettings: React.FC = () => {
       <div className="mb-4">
         <span className="mr-3">Mode:</span>
         <select
-          className="cursor-pointer bg-transparent border-2 border-gray-600 text-gray-600 font-semibold transition hover:bg-gray-300 hover:border-gray-300 hover:text-gray-900"
+          className="cursor-pointer bg-transparent border-2 border-gray-400 text-gray-400 font-semibold transition hover:bg-gray-500 hover:border-gray-500 hover:text-gray-50"
           onChange={({ target }) =>
             setRenderMode(parseInt(target.value) as RenderMode)
           }

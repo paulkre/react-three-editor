@@ -16,8 +16,8 @@ const ColorPicker: React.FC<{
     <>
       <button
         className={cn(
-          "appearance-none block w-8 h-8 rounded-lg border transition-all hover:border-gray-600",
-          active ? "border-gray-400" : "border-gray-700"
+          "appearance-none block w-8 h-8 rounded-lg border-2 transition-all hover:border-gray-500",
+          active ? "border-gray-500" : "border-gray-400"
         )}
         onClick={() => setActive(!active)}
         style={{ background: color }}

@@ -20,7 +20,7 @@ export const ResolutionSettings: React.FC = () => {
         value={width}
         onValue={(value) => setResolution([parseInt(value), height])}
       />
-      <span className="px-2 text-gray-700 select-none">X</span>
+      <span className="px-2 select-none">X</span>
       <TextField
         placeholder="Height"
         value={height}
