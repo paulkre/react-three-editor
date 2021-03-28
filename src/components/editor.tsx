@@ -54,7 +54,7 @@ export const Editor: React.FC<ContainerProps> = ({
   return (
     <div className="flex flex-col h-screen max-w-full bg-gray-50">
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 overflow-hidden flex justify-center items-center p-8 flex-shrink-1">
+        <div className="flex-1 overflow-hidden flex justify-center items-center p-6 flex-shrink-1">
           <div className="overflow-auto shadow-lg box-content max-w-full max-h-full bg-alpha0 bg-center">
             <Canvas
               {...canvasProps}

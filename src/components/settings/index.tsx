@@ -31,8 +31,8 @@ export const Settings: React.FC = () => {
           shown ? "max-w-7xl" : "max-w-0 translate-x-full pointer-events-none"
         )}
       >
-        <div className="py-8 h-full bg-gray-100 rounded-3xl">
-          <div className="px-8 h-full overflow-y-auto max-h-full">
+        <div className="py-8 bg-gray-100 rounded-3xl h-full max-h-sidebar">
+          <div className="px-8 overflow-y-auto h-full max-h-full">
             <div className="mb-8">
               <ResolutionSettings />
             </div>
