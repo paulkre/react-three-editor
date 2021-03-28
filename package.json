@@ -60,9 +60,7 @@
     "lib/"
   ],
   "devDependencies": {
-    "@storybook/addon-essentials": "^6.1.21",
     "@storybook/addon-info": "^5.3.21",
-    "@storybook/addon-links": "^6.1.21",
     "@storybook/addons": "^6.1.21",
     "@storybook/react": "^6.1.21",
     "@tailwindcss/aspect-ratio": "^0.2.0",
