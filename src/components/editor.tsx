@@ -34,10 +34,10 @@ const Scene: React.FC<{
 const Canvas: React.FC<ContainerProps> = ({ children, ...props }) => {
   const [
     {
+      mode,
       resolution,
       background,
       frame,
-      isPlaying,
       frameRate,
       duration: { ms: durationMs },
       playStart,
@@ -59,7 +59,7 @@ const Canvas: React.FC<ContainerProps> = ({ children, ...props }) => {
     >
       <FrameProvider
         frame={frame}
-        isPlaying={isPlaying}
+        isPlaying={mode === AppMode.Playing}
         frameRate={frameRate}
         durationMs={durationMs}
         playStart={playStart}
@@ -72,8 +72,17 @@ const Canvas: React.FC<ContainerProps> = ({ children, ...props }) => {
   );
 };
 
-export const Editor: React.FC<ContainerProps> = ({ ...canvasProps }) => (
-  <StoreProvider>
+export const Editor: React.FC<ContainerProps & { autoPlay?: boolean }> = ({
+  autoPlay,
+  ...canvasProps
+}) => (
+  <StoreProvider
+    userState={
+      autoPlay
+        ? { mode: AppMode.Playing, playStart: Date.now(), frame: 0 }
+        : undefined
+    }
+  >
     <div className="flex flex-col h-screen max-w-full bg-gray-50">
       <div className="flex-1 flex overflow-hidden">
         <div className="flex-1 overflow-hidden flex justify-center items-center p-6 flex-shrink-1">

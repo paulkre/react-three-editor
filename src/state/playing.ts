@@ -1,7 +1,6 @@
 import { AppMode, ActionsCreator } from ".";
 
 export type PlayingState = {
-  isPlaying: boolean;
   playStart: number;
 };
 
@@ -11,7 +10,6 @@ export type PlayingActions = {
 };
 
 export const initialPlayingState: PlayingState = {
-  isPlaying: false,
   playStart: 0,
 };
 
