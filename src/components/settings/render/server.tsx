@@ -60,14 +60,11 @@ function useWebSocket(url: string) {
 }
 
 export const ServerRender: React.FC = () => {
-  const [isRendering, renderNext, outDir, setOutDir] = useStore((state) => [
-    state.mode === AppMode.Rendering,
-    state.renderNext,
-    state.outDir,
-    state.setOutDir,
-  ]);
+  const [{ mode, outDir }, { renderNext, setOutDir }] = useStore();
   const getFrameData = useRenderedFrame();
   const socket = useWebSocket("ws://127.0.0.1:3001");
+
+  const isRendering = mode === AppMode.Rendering;
 
   React.useEffect(() => {
     if (!isRendering || !socket) return;

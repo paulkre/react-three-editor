@@ -1,20 +1,17 @@
 import React from "react";
-import { useStore, State } from "../../state";
+import { useStore } from "../../state";
 
 import { TextField } from "./text-field";
 import { Heading } from ".";
 
 export const TimeRangeSettings: React.FC = () => {
   const [
-    { seconds: durationSeconds, frames },
-    frameRate,
-    setTimeRange,
-  ] = useStore(
-    React.useCallback(
-      (state: State) => [state.duration, state.frameRate, state.setTimeRange],
-      []
-    )
-  );
+    {
+      duration: { seconds: durationSeconds, frames },
+      frameRate,
+    },
+    { setTimeRange },
+  ] = useStore();
 
   return (
     <>

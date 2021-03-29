@@ -1,8 +1,12 @@
 import React from "react";
-import { Canvas, ContainerProps, useThree } from "react-three-fiber";
+import {
+  Canvas as ThreeCanvas,
+  ContainerProps,
+  useThree,
+} from "react-three-fiber";
 import { Color } from "three";
 
-import { useStore, Background, AppMode } from "../state";
+import { StoreProvider, useStore, Background, AppMode } from "../state";
 import { Settings } from "./settings";
 import { Timeline } from "./timeline";
 import { FrameProvider } from "./frame-provider";
@@ -27,58 +31,54 @@ const Scene: React.FC<{
   return <>{children}</>;
 };
 
-export const Editor: React.FC<ContainerProps> = ({
-  children,
-  ...canvasProps
-}) => {
+const Canvas: React.FC<ContainerProps> = ({ children, ...props }) => {
   const [
-    resolution,
-    background,
-    setCanvas,
-    frame,
-    isPlaying,
-    frameRate,
-    durationMs,
-    playStart,
-  ] = useStore((state) => [
-    state.resolution,
-    state.background,
-    state.setCanvas,
-    state.frame,
-    state.mode === AppMode.Playing,
-    state.frameRate,
-    state.duration.ms,
-    state.playStart,
-  ]);
+    {
+      resolution,
+      background,
+      frame,
+      isPlaying,
+      frameRate,
+      duration: { ms: durationMs },
+      playStart,
+    },
+    { setCanvas },
+  ] = useStore();
 
   return (
+    <ThreeCanvas
+      {...props}
+      style={{
+        width: `${resolution[0]}px`,
+        height: `${resolution[1]}px`,
+      }}
+      gl={{
+        ...props.gl,
+        preserveDrawingBuffer: true,
+      }}
+    >
+      <FrameProvider
+        frame={frame}
+        isPlaying={isPlaying}
+        frameRate={frameRate}
+        durationMs={durationMs}
+        playStart={playStart}
+      >
+        <Scene background={background} setCanvas={setCanvas}>
+          {children}
+        </Scene>
+      </FrameProvider>
+    </ThreeCanvas>
+  );
+};
+
+export const Editor: React.FC<ContainerProps> = ({ ...canvasProps }) => (
+  <StoreProvider>
     <div className="flex flex-col h-screen max-w-full bg-gray-50">
       <div className="flex-1 flex overflow-hidden">
         <div className="flex-1 overflow-hidden flex justify-center items-center p-6 flex-shrink-1">
           <div className="overflow-auto shadow-lg box-content max-w-full max-h-full bg-alpha0 bg-center">
-            <Canvas
-              {...canvasProps}
-              style={{
-                width: `${resolution[0]}px`,
-                height: `${resolution[1]}px`,
-              }}
-              gl={{
-                ...canvasProps.gl,
-                preserveDrawingBuffer: true,
-              }}
-            >
-              <FrameProvider
-                frame={frame}
-                isPlaying={isPlaying}
-                frameRate={frameRate}
-                durationMs={durationMs}
-                playStart={playStart}
-              >
-                <Scene background={background} setCanvas={setCanvas}>
-                  {children}
-                </Scene>
-              </FrameProvider>
-            </Canvas>
+            <Canvas {...canvasProps} />
           </div>
         </div>
         <div className="flex-shrink-0">
@@ -89,5 +89,5 @@ export const Editor: React.FC<ContainerProps> = ({
         <Timeline />
       </div>
     </div>
-  );
-};
+  </StoreProvider>
+);

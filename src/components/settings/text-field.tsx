@@ -18,7 +18,7 @@ export const TextField: React.FC<
         className
       )}
       value={focussing ? innerValue : value}
-      onInput={({ target }) =>
+      onChange={({ target }) =>
         setInnerValue((target as HTMLInputElement).value)
       }
       onFocus={() => {

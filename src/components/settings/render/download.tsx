@@ -9,12 +9,11 @@ import { RenderButtons } from "./buttons";
 const downloadCoolDown = 200;
 
 export const DownloadRender: React.FC = () => {
-  const [isRendering, renderNext] = useStore((state) => [
-    state.mode === AppMode.Rendering,
-    state.renderNext,
-  ]);
+  const [{ mode }, { renderNext }] = useStore();
   const getFrameData = useRenderedFrame();
   const lastDownloadTimeRef = React.useRef(0);
+
+  const isRendering = mode === AppMode.Rendering;
 
   React.useEffect(() => {
     if (!isRendering) return;

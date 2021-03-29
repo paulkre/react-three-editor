@@ -7,11 +7,7 @@ import { DownloadRender } from "./download";
 import { ServerRender } from "./server";
 
 export const RenderSettings: React.FC = () => {
-  const [renderMode, setRenderMode, isRendering] = useStore((state) => [
-    state.renderMode,
-    state.setRenderMode,
-    state.mode === AppMode.Rendering,
-  ]);
+  const [{ mode, renderMode }, { setRenderMode }] = useStore();
 
   return (
     <>
@@ -24,7 +20,7 @@ export const RenderSettings: React.FC = () => {
             setRenderMode(parseInt(target.value) as RenderMode)
           }
           value={renderMode}
-          disabled={isRendering}
+          disabled={mode === AppMode.Rendering}
         >
           <option value={RenderMode.Download}>Download</option>
           <option value={RenderMode.Server}>Server</option>

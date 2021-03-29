@@ -1,4 +1,4 @@
-import { AppMode, StateCreator } from ".";
+import { AppMode, ActionsCreator } from ".";
 
 export type TimeRangeState = {
   duration: {
@@ -7,16 +7,24 @@ export type TimeRangeState = {
     frames: number;
   };
   frameRate: number;
+};
+
+export type TimeRangeActions = {
   setTimeRange(durationSeconds: number, frameRate: number): void;
 };
 
-export const timeRangeStateCreator: StateCreator<TimeRangeState> = (set) => ({
+export const initialTimeRangeState: TimeRangeState = {
   duration: {
     ms: 5000,
     seconds: 5,
     frames: 250,
   },
   frameRate: 50,
+};
+
+export const createTimeRangeActions: ActionsCreator<TimeRangeActions> = (
+  set
+) => ({
   setTimeRange: (durationSeconds, frameRate) =>
     set((state) => {
       if (
@@ -36,7 +44,6 @@ export const timeRangeStateCreator: StateCreator<TimeRangeState> = (set) => ({
       const frameCount = frameRate * Math.floor(durationSeconds) + fracFrames;
 
       return {
-        ...state,
         frame: Math.min(state.frame, frameCount - 1),
         frameRate,
         duration: {

@@ -1,6 +1,6 @@
 import React from "react";
 import cn from "classnames";
-import { useStore, State } from "../../state";
+import { useStore } from "../../state";
 import { SketchPicker } from "react-color";
 
 import { Heading } from ".";
@@ -40,12 +40,12 @@ const ColorPicker: React.FC<{
 };
 
 export const BackgroundSettings: React.FC = () => {
-  const [{ active, color }, setBackground] = useStore(
-    React.useCallback(
-      (state: State) => [state.background, state.setBackground],
-      []
-    )
-  );
+  const [
+    {
+      background: { active, color },
+    },
+    { setBackground },
+  ] = useStore();
 
   return (
     <>

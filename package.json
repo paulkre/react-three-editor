@@ -27,8 +27,7 @@
     "react-color": "^2.19.3",
     "react-three-fiber": "^5.3.21",
     "three": "^0.126.1",
-    "ws": "^7.4.4",
-    "zustand": "^3.3.3"
+    "ws": "^7.4.4"
   },
   "scripts": {
     "start": "start-storybook",

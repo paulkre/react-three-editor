@@ -1,16 +1,16 @@
 import React from "react";
-import { useStore, State } from "../../state";
+import { useStore } from "../../state";
 
 import { TextField } from "./text-field";
 import { Heading } from ".";
 
 export const ResolutionSettings: React.FC = () => {
-  const [[width, height], setResolution] = useStore(
-    React.useCallback(
-      (state: State) => [state.resolution, state.setResolution],
-      []
-    )
-  );
+  const [
+    {
+      resolution: [width, height],
+    },
+    { setResolution },
+  ] = useStore();
 
   return (
     <>

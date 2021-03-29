@@ -1,4 +1,4 @@
-import { AppMode, StateCreator } from ".";
+import { AppMode, ActionsCreator } from ".";
 
 export enum RenderMode {
   Download,
@@ -8,6 +8,9 @@ export enum RenderMode {
 export type RenderingState = {
   renderMode: RenderMode;
   outDir: string;
+};
+
+export type RenderingActions = {
   setOutDir(value: string): void;
   startRendering(): void;
   stopRendering(): void;
@@ -15,16 +18,19 @@ export type RenderingState = {
   setRenderMode(mode: RenderMode): void;
 };
 
-export const renderingStateCreator: StateCreator<RenderingState> = (set) => ({
-  isRendering: false,
+export const initialRenderingState: RenderingState = {
   renderMode: RenderMode.Download,
   outDir: "out/",
+};
+
+export const createRenderingActions: ActionsCreator<RenderingActions> = (
+  set
+) => ({
   setOutDir: (value) =>
     set((state) =>
       state.mode === AppMode.Rendering || !value
         ? state
         : {
-            ...state,
             outDir: value,
           }
     ),
@@ -33,7 +39,6 @@ export const renderingStateCreator: StateCreator<RenderingState> = (set) => ({
       state.mode !== AppMode.Paused
         ? state
         : {
-            ...state,
             mode: AppMode.Rendering,
             frame: 0,
           }
@@ -44,7 +49,6 @@ export const renderingStateCreator: StateCreator<RenderingState> = (set) => ({
       state.mode !== AppMode.Rendering
         ? state
         : {
-            ...state,
             mode: AppMode.Paused,
           }
     );
@@ -55,10 +59,9 @@ export const renderingStateCreator: StateCreator<RenderingState> = (set) => ({
         ? state
         : state.frame < state.duration.frames - 1
         ? {
-            ...state,
             frame: state.frame + 1,
           }
-        : { ...state, mode: AppMode.Paused }
+        : { mode: AppMode.Paused }
     );
   },
   setRenderMode: (renderMode) =>
@@ -66,7 +69,6 @@ export const renderingStateCreator: StateCreator<RenderingState> = (set) => ({
       state.mode === AppMode.Rendering
         ? state
         : {
-            ...state,
             renderMode,
           }
     ),

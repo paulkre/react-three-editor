@@ -2,10 +2,12 @@ import React from "react";
 import { AppMode, useStore } from "../../state";
 
 const Background: React.FC = () => {
-  const [frameCount, frameRate] = useStore((state) => [
-    state.duration.frames,
-    state.frameRate,
-  ]);
+  const [
+    {
+      duration: { frames: frameCount },
+      frameRate,
+    },
+  ] = useStore();
   const ref = React.useRef<HTMLCanvasElement>(null);
 
   React.useEffect(() => {
@@ -82,22 +84,15 @@ const Background: React.FC = () => {
 
 const Pointer: React.FC = () => {
   const [
-    { frames: frameCount, ms: durationMs },
-    frame,
-    frameRate,
-    setFrame,
-    isPlaying,
-    stopPlaying,
-    playStart,
-  ] = useStore((state) => [
-    state.duration,
-    state.frame,
-    state.frameRate,
-    state.setFrame,
-    state.mode === AppMode.Playing,
-    state.stopPlaying,
-    state.playStart,
-  ]);
+    {
+      mode,
+      duration: { frames: frameCount, ms: durationMs },
+      frame,
+      playStart,
+      frameRate,
+    },
+    { setFrame, stopPlaying },
+  ] = useStore();
 
   const buttonRef = React.useRef<HTMLButtonElement>(null);
 
@@ -156,7 +151,8 @@ const Pointer: React.FC = () => {
 
   const pointerRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    if (!isPlaying) return;
+    if (mode !== AppMode.Playing) return;
+
     let mounted = true;
     const pointer = pointerRef.current!;
     const frameMs = Math.floor(frame * (1000 / frameRate));
@@ -175,7 +171,7 @@ const Pointer: React.FC = () => {
     return () => {
       mounted = false;
     };
-  }, [isPlaying, playStart, frameRate, frame, durationMs]);
+  }, [mode, playStart, frameRate, frame, durationMs]);
 
   return (
     <div className="relative h-full">

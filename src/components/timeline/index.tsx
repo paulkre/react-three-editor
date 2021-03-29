@@ -4,11 +4,9 @@ import { AppMode, useStore } from "../../state";
 import { TimeSlider } from "./slider";
 
 const PlayButton: React.FC = () => {
-  const [isPlaying, startPlaying, stopPlaying] = useStore((state) => [
-    state.mode === AppMode.Playing,
-    state.startPlaying,
-    state.stopPlaying,
-  ]);
+  const [{ mode }, { startPlaying, stopPlaying }] = useStore();
+
+  const isPlaying = mode === AppMode.Playing;
 
   React.useEffect(() => {
     function handlePause({ key }: KeyboardEvent) {

@@ -4,13 +4,9 @@ import { AppMode, useStore } from "../../../state";
 import { Button, ButtonVariant } from "../button";
 
 export const RenderButtons: React.FC = () => {
-  const [isRendering, startRendering, stopRendering] = useStore((state) => [
-    state.mode === AppMode.Rendering,
-    state.startRendering,
-    state.stopRendering,
-  ]);
+  const [{ mode }, { startRendering, stopRendering }] = useStore();
 
-  return isRendering ? (
+  return mode === AppMode.Rendering ? (
     <Button onClick={stopRendering} variant={ButtonVariant.Cancel}>
       Stop
     </Button>

@@ -1,10 +1,28 @@
-import create from "zustand";
-import { persist } from "zustand/middleware";
-import type { SetState } from "zustand";
+import {
+  createStateManager,
+  ActionsCreator as ActionsCreatorBase,
+} from "./state-manager";
 
-import { playingStateCreator, PlayingState } from "./playing";
-import { timeRangeStateCreator, TimeRangeState } from "./time-range";
-import { renderingStateCreator, RenderingState } from "./rendering";
+import {
+  initialPlayingState,
+  createPlayingActions,
+  PlayingState,
+  PlayingActions,
+} from "./playing";
+
+import {
+  initialTimeRangeState,
+  createTimeRangeActions,
+  TimeRangeState,
+  TimeRangeActions,
+} from "./time-range";
+
+import {
+  initialRenderingState,
+  createRenderingActions,
+  RenderingState,
+  RenderingActions,
+} from "./rendering";
 
 export enum AppMode {
   Paused,
@@ -19,89 +37,81 @@ export type Background = {
   color: string;
 };
 
-export type State = PlayingState &
+type State = PlayingState &
   TimeRangeState &
   RenderingState & {
     mode: AppMode;
-
     resolution: Resolution;
-    setResolution(value: Resolution): void;
-
     background: Background;
-    setBackground(value: Background): void;
-
     frame: number;
-    setFrame(frame: number): void;
-
     canvas: HTMLCanvasElement | null;
+  };
+
+type Actions = PlayingActions &
+  TimeRangeActions &
+  RenderingActions & {
+    setResolution(value: Resolution): void;
+    setBackground(value: Background): void;
+    setFrame(frame: number): void;
     setCanvas(canvas: HTMLCanvasElement): void;
   };
 
-export type StateCreator<T> = (set: SetState<State>) => T;
+export type ActionsCreator<A> = ActionsCreatorBase<State, A>;
 
 const cleanNumber = (n: number) => (isNaN(n) ? 0 : n);
-
 const parseDimension = (n: number) => Math.max(1, Math.floor(cleanNumber(n)));
 
-export const useStore = create<State>(
-  persist(
-    (set) => {
-      return {
-        ...playingStateCreator(set),
-        ...timeRangeStateCreator(set),
-        ...renderingStateCreator(set),
-
-        mode: AppMode.Paused,
-
-        resolution: [512, 512],
-        setResolution: ([width, height]) =>
-          set((state) =>
-            state.mode === AppMode.Rendering || isNaN(width) || isNaN(height)
-              ? state
-              : {
-                  ...state,
-                  resolution: [parseDimension(width), parseDimension(height)],
-                }
-          ),
-
-        background: {
-          active: true,
-          color: "black",
-        },
-        setBackground: (background) =>
-          set((state) =>
-            state.mode === AppMode.Rendering
-              ? state
-              : {
-                  ...state,
-                  background,
-                }
-          ),
-
-        frame: 0,
-        setFrame(frame) {
-          set((state) => ({
-            ...state,
-            frame: isNaN(frame)
-              ? 0
-              : Math.max(
-                  0,
-                  Math.min(state.duration.frames - 1, Math.floor(frame))
-                ),
-          }));
-        },
-
-        canvas: null,
-        setCanvas: (canvas) =>
-          set((state) => ({
-            ...state,
-            canvas,
-          })),
-      };
+export const { StoreProvider, useStore } = createStateManager<State, Actions>(
+  {
+    ...initialPlayingState,
+    ...initialTimeRangeState,
+    ...initialRenderingState,
+    mode: AppMode.Paused,
+    resolution: [512, 512],
+    background: {
+      active: true,
+      color: "black",
     },
-    {
+    frame: 0,
+    canvas: null,
+  },
+  (set) => ({
+    ...createPlayingActions(set),
+    ...createTimeRangeActions(set),
+    ...createRenderingActions(set),
+    setResolution: ([width, height]) =>
+      set((state) =>
+        state.mode === AppMode.Rendering || isNaN(width) || isNaN(height)
+          ? state
+          : {
+              resolution: [parseDimension(width), parseDimension(height)],
+            }
+      ),
+    setBackground: (background) =>
+      set((state) =>
+        state.mode === AppMode.Rendering
+          ? state
+          : {
+              background,
+            }
+      ),
+    setFrame(frame) {
+      set((state) => ({
+        ...state,
+        frame: isNaN(frame)
+          ? 0
+          : Math.max(0, Math.min(state.duration.frames - 1, Math.floor(frame))),
+      }));
+    },
+    setCanvas: (canvas) =>
+      set(() => ({
+        canvas,
+      })),
+  }),
+  {
+    persist: {
       name: "REACT_THREE_FIBER_PLAYGROUND",
-      blacklist: ["canvas", "mode"],
-    }
-  )
+      exclude: ["canvas", "mode"],
+    },
+  }
 );
