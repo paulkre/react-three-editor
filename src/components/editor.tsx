@@ -72,31 +72,46 @@ const Canvas: React.FC<ContainerProps> = ({ children, ...props }) => {
   );
 };
 
-export const Editor: React.FC<ContainerProps & { autoPlay?: boolean }> = ({
-  autoPlay,
-  ...canvasProps
-}) => (
-  <StoreProvider
-    userState={
-      autoPlay
-        ? { mode: AppMode.Playing, playStart: Date.now(), frame: 0 }
-        : undefined
-    }
-  >
-    <div className="flex flex-col h-screen max-w-full bg-gray-50">
-      <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 overflow-hidden flex justify-center items-center p-6 flex-shrink-1">
-          <div className="overflow-auto shadow-lg box-content max-w-full max-h-full bg-alpha0 bg-center">
-            <Canvas {...canvasProps} />
+export const Editor: React.FC<
+  ContainerProps & {
+    autoPlay?: boolean;
+    resolution?: [number, number];
+    hideUI?: boolean;
+  }
+> = ({ autoPlay, resolution, hideUI, ...canvasProps }) => {
+  const userState = React.useMemo(
+    () => ({
+      ...(autoPlay && {
+        mode: AppMode.Playing,
+        playStart: Date.now(),
+        frame: 0,
+      }),
+      ...(resolution && { resolution }),
+    }),
+    [autoPlay, resolution]
+  );
+
+  return (
+    <StoreProvider userState={userState}>
+      <div className="flex flex-col h-screen max-w-full bg-gray-50">
+        <div className="flex-1 flex overflow-hidden">
+          <div className="flex-1 overflow-hidden flex justify-center items-center p-6 flex-shrink-1">
+            <div className="overflow-auto shadow-lg box-content max-w-full max-h-full bg-alpha0 bg-center">
+              <Canvas {...canvasProps} />
+            </div>
           </div>
+          {!hideUI && (
+            <div className="flex-shrink-0">
+              <Settings />
+            </div>
+          )}
         </div>
-        <div className="flex-shrink-0">
-          <Settings />
-        </div>
+        {!hideUI && (
+          <div className="flex-shrink-0">
+            <Timeline />
+          </div>
+        )}
       </div>
-      <div className="flex-shrink-0">
-        <Timeline />
-      </div>
-    </div>
-  </StoreProvider>
-);
+    </StoreProvider>
+  );
+};
