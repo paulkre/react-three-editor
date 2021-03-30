@@ -3,6 +3,7 @@ import React from "react";
 import { persistState, recoverPersistedState, PersistOptions } from "./persist";
 
 export type StateBase = { [key: string]: any };
+type ActionsBase = { [key: string]: (...args: any) => void };
 type Reducer<S> = React.Reducer<S, (state: S) => Partial<S>>;
 export type ActionsCreator<S, A> = (
   dispatch: (set: (state: S) => Partial<S>) => void
@@ -13,40 +14,48 @@ type Options = { persist?: PersistOptions };
 
 const localStorageAvailable = typeof localStorage !== "undefined";
 
-export function createStateManager<
-  S extends StateBase,
-  A extends { [key: string]: (...args: any) => void }
->(
-  initialState: S,
+type StoreProviderComponent<S extends StateBase> = React.FC<{
+  userState?: Partial<S>;
+  persist?: PersistOptions;
+}>;
+
+function handlePersist<S extends StateBase>(
+  state: S,
+  options?: PersistOptions
+): S {
+  return options && localStorageAvailable
+    ? { ...state, ...recoverPersistedState(options) }
+    : state;
+}
+
+export function createStateManager<S extends StateBase, A extends ActionsBase>(
+  defaultState: S,
   createActions: ActionsCreator<S, A>,
   { persist }: Options = {}
 ): {
-  StoreProvider: React.FC<{ userState?: Partial<S> }>;
+  StoreProvider: StoreProviderComponent<S>;
   useStore: () => StateContext<S, A>;
 } {
-  if (persist && localStorageAvailable)
-    initialState = {
-      ...initialState,
-      ...recoverPersistedState(persist),
-    };
-
   const Context = React.createContext<StateContext<S, A>>([
-    initialState,
-    createActions(() => {}),
+    handlePersist(defaultState, persist),
+    createActions(() => ({})),
   ]);
-
-  const reducer: Reducer<S> = (state, set) => {
-    const result = set(state);
-    if (state === result) return state;
-    const newState = { ...state, ...result };
-    if (persist && localStorageAvailable) persistState(newState, persist);
-    return newState;
-  };
 
   return {
     StoreProvider: ({ children, userState }) => {
+      const initialState = React.useMemo<S>(() => {
+        console.log("UPDAING STATE");
+        return handlePersist(defaultState, persist);
+      }, []);
+
       const [state, dispatch] = React.useReducer<Reducer<S>, undefined>(
-        reducer,
+        React.useCallback((state, set) => {
+          const result = set(state);
+          if (state === result) return state;
+          const newState = { ...state, ...result };
+          if (persist && localStorageAvailable) persistState(newState, persist);
+          return newState;
+        }, []),
         undefined,
         () => initialState
       );
@@ -62,6 +71,8 @@ export function createStateManager<
         <Context.Provider value={[state, actions]}>{children}</Context.Provider>
       );
     },
-    useStore: () => React.useContext(Context),
+    useStore() {
+      return React.useContext<StateContext<S, A>>(Context);
+    },
   };
 }

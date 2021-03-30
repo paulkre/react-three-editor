@@ -17,10 +17,10 @@ export type FrameManager = {
 };
 
 const Context = React.createContext<FrameManager>({
-  subscribe: () => () => {},
+  subscribe: () => () => ({}),
 });
 
-export function useFrame(cb: FrameCallback, priority = 0) {
+export function useFrame(cb: FrameCallback, priority = 0): void {
   const { subscribe } = React.useContext(Context);
   const ref = React.useRef(cb);
   React.useLayoutEffect(() => void (ref.current = cb), [cb]);
