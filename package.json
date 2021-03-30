@@ -16,7 +16,7 @@
   "repository": "https://github.com/paulkre/react-three-editor.git",
   "author": "Paul Kretschel <paul.kretschel@icloud.com>",
   "license": "MIT",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "lib/index.js",
   "bin": "lib/bin/index.js",
   "dependencies": {
