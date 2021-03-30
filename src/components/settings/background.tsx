@@ -23,11 +23,14 @@ const ColorPicker: React.FC<{
         style={{ background: color }}
         disabled={disabled}
       />
-      <div
-        className={cn("transition", !active && "pointer-events-none opacity-0")}
-      >
+      <div className={active ? undefined : "pointer-events-none"}>
         <div onClick={() => setActive(false)} className="fixed inset-0" />
-        <div className="absolute left-0 pt-2 text-black">
+        <div
+          className={cn(
+            "absolute left-0 pt-2 text-black transition",
+            !active && "opacity-0"
+          )}
+        >
           <SketchPicker
             disableAlpha={true}
             color={color}

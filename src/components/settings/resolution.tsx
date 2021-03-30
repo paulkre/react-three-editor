@@ -15,17 +15,19 @@ export const ResolutionSettings: React.FC = () => {
   return (
     <>
       <Heading>Resolution</Heading>
-      <TextField
-        placeholder="Width"
-        value={width}
-        onValue={(value) => setResolution([parseInt(value), height])}
-      />
-      <span className="px-2 select-none">X</span>
-      <TextField
-        placeholder="Height"
-        value={height}
-        onValue={(value) => setResolution([width, parseInt(value)])}
-      />
+      <div className="flex items-center">
+        <TextField
+          placeholder="Width"
+          value={width}
+          onValue={(value) => setResolution([parseInt(value), height])}
+        />
+        <span className="px-2 select-none">X</span>
+        <TextField
+          placeholder="Height"
+          value={height}
+          onValue={(value) => setResolution([width, parseInt(value)])}
+        />
+      </div>
     </>
   );
 };
