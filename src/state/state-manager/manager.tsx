@@ -43,10 +43,10 @@ export function createStateManager<S extends StateBase, A extends ActionsBase>(
 
   return {
     StoreProvider: ({ children, userState }) => {
-      const initialState = React.useMemo<S>(() => {
-        console.log("UPDAING STATE");
-        return handlePersist(defaultState, persist);
-      }, []);
+      const initialState = React.useMemo<S>(
+        () => handlePersist(defaultState, persist),
+        []
+      );
 
       const [state, dispatch] = React.useReducer<Reducer<S>, undefined>(
         React.useCallback((state, set) => {
