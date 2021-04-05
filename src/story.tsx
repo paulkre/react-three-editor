@@ -15,6 +15,7 @@ type Args = {
   frameRate: number;
   autoPlay: boolean;
   hideUI: boolean;
+  renderTimeout: number;
 };
 
 export function createThreeStory<T = DefaultArgs>(
@@ -111,6 +112,14 @@ export function createThreeStory<T = DefaultArgs>(
           type: "boolean",
         },
         defaultValue: false,
+      },
+      renderTimeout: {
+        name: "Render Timeout",
+        control: {
+          type: "number",
+          min: 0,
+        },
+        defaultValue: defaultState.renderTimeout,
       },
     },
     args: {

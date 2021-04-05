@@ -9,7 +9,7 @@ import { RenderButtons } from "./buttons";
 const downloadCoolDown = 200;
 
 export const DownloadRender: React.FC = () => {
-  const [{ mode }, { renderNext }] = useStore();
+  const [{ mode, renderTimeout }, { renderNext }] = useStore();
   const getFrameData = useRenderedFrame();
   const lastDownloadTimeRef = React.useRef(0);
 
@@ -29,8 +29,8 @@ export const DownloadRender: React.FC = () => {
 
       lastDownloadTimeRef.current = Date.now();
       renderNext();
-    }, cooldown);
-  }, [isRendering, getFrameData, renderNext]);
+    }, cooldown + renderTimeout);
+  }, [isRendering, renderTimeout, getFrameData, renderNext]);
 
   return <RenderButtons />;
 };

@@ -40,6 +40,7 @@ type State = PlayingState &
     background: string | null;
     frame: number;
     canvas: HTMLCanvasElement | null;
+    renderTimeout: number;
   };
 
 type Actions = PlayingActions &
@@ -49,6 +50,7 @@ type Actions = PlayingActions &
     setBackground(value: string | null): void;
     setFrame(frame: number): void;
     setCanvas(canvas: HTMLCanvasElement): void;
+    setRenderTimeout(value: number): void;
   };
 
 export type ActionsCreator<A> = ActionsCreatorBase<State, A>;
@@ -65,6 +67,7 @@ export const defaultState: State = {
   background: "black",
   frame: 0,
   canvas: null,
+  renderTimeout: 0,
 };
 
 export const { StoreProvider, useStore } = createStateManager<State, Actions>(
@@ -87,16 +90,14 @@ export const { StoreProvider, useStore } = createStateManager<State, Actions>(
       ),
     setFrame(frame) {
       set((state) => ({
-        ...state,
         frame: isNaN(frame)
           ? 0
           : Math.max(0, Math.min(state.duration.frames - 1, Math.floor(frame))),
       }));
     },
-    setCanvas: (canvas) =>
-      set(() => ({
-        canvas,
-      })),
+    setCanvas: (canvas) => set(() => ({ canvas })),
+    setRenderTimeout: (value) =>
+      set(() => ({ renderTimeout: isNaN(value) ? Math.max(0, value) : 0 })),
   }),
   {
     persist: {
