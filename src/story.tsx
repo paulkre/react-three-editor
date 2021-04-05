@@ -1,5 +1,6 @@
 import type { Meta, Story } from "@storybook/react";
 import type { Args as DefaultArgs } from "@storybook/addons";
+import type { ContainerProps } from "react-three-fiber";
 
 import React from "react";
 import { defaultState } from "./state";
@@ -17,7 +18,8 @@ type Args = {
 };
 
 export function createThreeStory<T = DefaultArgs>(
-  meta: Meta<T>
+  meta: Meta<T>,
+  canvasProps?: ContainerProps
 ): Meta<T & Args> {
   const Story: Story<T & Args> = ({
     width,
@@ -37,6 +39,7 @@ export function createThreeStory<T = DefaultArgs>(
       frameRate={frameRate}
       autoPlay={autoPlay}
       hideUI={hideUI}
+      canvas={canvasProps}
     >
       {meta.component && <meta.component {...props} />}
     </Editor>
