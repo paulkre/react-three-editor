@@ -31,4 +31,4 @@ const meta = createThreeStory({
 });
 
 export default meta;
-export const Default = meta.component.bind({});
+export const Default = meta.component;

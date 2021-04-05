@@ -67,7 +67,7 @@ export const defaultState: State = {
   background: "black",
   frame: 0,
   canvas: null,
-  renderTimeout: 0,
+  renderTimeout: 100,
 };
 
 export const { StoreProvider, useStore } = createStateManager<State, Actions>(
@@ -97,7 +97,9 @@ export const { StoreProvider, useStore } = createStateManager<State, Actions>(
     },
     setCanvas: (canvas) => set(() => ({ canvas })),
     setRenderTimeout: (value) =>
-      set(() => ({ renderTimeout: isNaN(value) ? Math.max(0, value) : 0 })),
+      set(() => ({
+        renderTimeout: isNaN(value) ? 0 : Math.floor(Math.max(0, value)),
+      })),
   }),
   {
     persist: {

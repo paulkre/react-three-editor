@@ -31,6 +31,7 @@ export function createThreeStory<T = DefaultArgs>(
     frameRate,
     autoPlay,
     hideUI,
+    renderTimeout,
     ...props
   }) => (
     <Editor
@@ -41,6 +42,7 @@ export function createThreeStory<T = DefaultArgs>(
       autoPlay={autoPlay}
       hideUI={hideUI}
       canvas={canvasProps}
+      renderTimeout={renderTimeout}
     >
       {meta.component && <meta.component {...props} />}
     </Editor>
@@ -118,6 +120,7 @@ export function createThreeStory<T = DefaultArgs>(
         control: {
           type: "number",
           min: 0,
+          step: 1,
         },
         defaultValue: defaultState.renderTimeout,
       },

@@ -38,6 +38,7 @@ type InnerEditorProps = {
   frameRate?: number;
   autoPlay?: boolean;
   canvas?: Omit<ContainerProps, "children">;
+  renderTimeout?: number;
 };
 
 const Canvas: React.FC<InnerEditorProps> = ({
@@ -48,6 +49,7 @@ const Canvas: React.FC<InnerEditorProps> = ({
   frameRate: frameRateProp,
   autoPlay,
   canvas,
+  renderTimeout,
 }) => {
   const [
     {
@@ -66,6 +68,7 @@ const Canvas: React.FC<InnerEditorProps> = ({
       setTimeRange,
       setFrame,
       startPlaying,
+      setRenderTimeout,
     },
   ] = useStore();
 
@@ -87,6 +90,10 @@ const Canvas: React.FC<InnerEditorProps> = ({
     setFrame(0);
     startPlaying();
   }, [autoPlay, setFrame, startPlaying]);
+
+  React.useEffect(() => {
+    if (renderTimeout !== undefined) setRenderTimeout(renderTimeout);
+  }, [renderTimeout, setRenderTimeout]);
 
   return (
     <ThreeCanvas

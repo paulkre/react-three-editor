@@ -72,6 +72,7 @@ export const ServerRender: React.FC = () => {
   React.useEffect(() => {
     if (!isRendering || !socket) return;
 
+    console.log(renderTimeout);
     setTimeout(() => {
       const { name, data } = getFrameData();
       socket.send(
