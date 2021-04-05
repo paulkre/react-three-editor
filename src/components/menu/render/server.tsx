@@ -79,7 +79,7 @@ export const ServerRender: React.FC = () => {
           data,
         })
       );
-    }, 0);
+    }, 100);
   }, [isRendering, socket, outDir, getFrameData]);
 
   React.useEffect(() => {
