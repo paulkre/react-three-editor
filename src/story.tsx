@@ -19,7 +19,7 @@ type Args = {
 
 export function createThreeStory<T = DefaultArgs>(
   meta: Meta<T>,
-  canvasProps?: ContainerProps
+  canvasProps?: Omit<ContainerProps, "children">
 ): Meta<T & Args> {
   const Story: Story<T & Args> = ({
     width,
