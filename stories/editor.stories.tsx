@@ -1,6 +1,5 @@
 import React from "react";
-import { Meta, Story } from "@storybook/react";
-import { Editor, useFrame } from "../src";
+import { createThreeStory, useFrame } from "../src";
 import type { Mesh } from "three";
 
 const Sketch: React.FC = () => {
@@ -26,17 +25,10 @@ const Sketch: React.FC = () => {
   );
 };
 
-const Component: Story = () => (
-  <Editor>
-    <Sketch />
-  </Editor>
-);
-
-const meta: Meta = {
+const meta = createThreeStory({
   title: "Editor",
-  component: Component,
-};
+  component: Sketch,
+});
 
 export default meta;
-
-export const Default = Component.bind({});
+export const Default = meta.component.bind({});

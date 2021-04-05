@@ -32,17 +32,12 @@ export enum AppMode {
 
 export type Resolution = [number, number];
 
-export type Background = {
-  active: boolean;
-  color: string;
-};
-
 type State = PlayingState &
   TimeRangeState &
   RenderingState & {
     mode: AppMode;
     resolution: Resolution;
-    background: Background;
+    background: string | null;
     frame: number;
     canvas: HTMLCanvasElement | null;
   };
@@ -51,7 +46,7 @@ type Actions = PlayingActions &
   TimeRangeActions &
   RenderingActions & {
     setResolution(value: Resolution): void;
-    setBackground(value: Background): void;
+    setBackground(value: string | null): void;
     setFrame(frame: number): void;
     setCanvas(canvas: HTMLCanvasElement): void;
   };
@@ -61,20 +56,19 @@ export type ActionsCreator<A> = ActionsCreatorBase<State, A>;
 const cleanNumber = (n: number) => (isNaN(n) ? 0 : n);
 const parseDimension = (n: number) => Math.max(1, Math.floor(cleanNumber(n)));
 
+export const defaultState: State = {
+  ...initialPlayingState,
+  ...initialTimeRangeState,
+  ...initialRenderingState,
+  mode: AppMode.Paused,
+  resolution: [256, 256],
+  background: "black",
+  frame: 0,
+  canvas: null,
+};
+
 export const { StoreProvider, useStore } = createStateManager<State, Actions>(
-  {
-    ...initialPlayingState,
-    ...initialTimeRangeState,
-    ...initialRenderingState,
-    mode: AppMode.Paused,
-    resolution: [512, 512],
-    background: {
-      active: true,
-      color: "black",
-    },
-    frame: 0,
-    canvas: null,
-  },
+  defaultState,
   (set) => ({
     ...createPlayingActions(set),
     ...createTimeRangeActions(set),
@@ -89,11 +83,7 @@ export const { StoreProvider, useStore } = createStateManager<State, Actions>(
       ),
     setBackground: (background) =>
       set((state) =>
-        state.mode === AppMode.Rendering
-          ? state
-          : {
-              background,
-            }
+        state.mode === AppMode.Rendering ? state : { background }
       ),
     setFrame(frame) {
       set((state) => ({
@@ -111,7 +101,7 @@ export const { StoreProvider, useStore } = createStateManager<State, Actions>(
   {
     persist: {
       name: "REACT_THREE_FIBER_PLAYGROUND",
-      exclude: ["canvas", "mode"],
+      include: ["frame"],
     },
   }
 );

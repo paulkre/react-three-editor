@@ -6,7 +6,7 @@ import { RenderMode } from "../../../state/rendering";
 import { DownloadRender } from "./download";
 import { ServerRender } from "./server";
 
-export const RenderSettings: React.FC = () => {
+export const RenderMenu: React.FC = () => {
   const [{ mode, renderMode }, { setRenderMode }] = useStore();
 
   return (

@@ -14,11 +14,6 @@ type Options = { persist?: PersistOptions };
 
 const localStorageAvailable = typeof localStorage !== "undefined";
 
-type StoreProviderComponent<S extends StateBase> = React.FC<{
-  userState?: Partial<S>;
-  persist?: PersistOptions;
-}>;
-
 function handlePersist<S extends StateBase>(
   state: S,
   options?: PersistOptions
@@ -33,7 +28,7 @@ export function createStateManager<S extends StateBase, A extends ActionsBase>(
   createActions: ActionsCreator<S, A>,
   { persist }: Options = {}
 ): {
-  StoreProvider: StoreProviderComponent<S>;
+  StoreProvider: React.FC;
   useStore: () => StateContext<S, A>;
 } {
   const Context = React.createContext<StateContext<S, A>>([
@@ -42,7 +37,7 @@ export function createStateManager<S extends StateBase, A extends ActionsBase>(
   ]);
 
   return {
-    StoreProvider: ({ children, userState }) => {
+    StoreProvider: ({ children }) => {
       const initialState = React.useMemo<S>(
         () => handlePersist(defaultState, persist),
         []
@@ -61,11 +56,6 @@ export function createStateManager<S extends StateBase, A extends ActionsBase>(
       );
 
       const actions = React.useMemo(() => createActions(dispatch), [dispatch]);
-
-      React.useEffect(() => {
-        if (!userState) return;
-        dispatch(() => userState);
-      }, [userState]);
 
       return (
         <Context.Provider value={[state, actions]}>{children}</Context.Provider>

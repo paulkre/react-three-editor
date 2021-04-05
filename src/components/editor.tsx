@@ -6,13 +6,13 @@ import {
 } from "react-three-fiber";
 import { Color } from "three";
 
-import { StoreProvider, useStore, Background, AppMode } from "../state";
-import { Settings } from "./settings";
+import { StoreProvider, useStore, AppMode, Resolution } from "../state";
+import { Menu } from "./menu";
 import { Timeline } from "./timeline";
 import { FrameProvider } from "./frame-provider";
 
 const Scene: React.FC<{
-  background: Background;
+  background: string | null;
   setCanvas(canvas: HTMLCanvasElement): void;
 }> = ({ children, background, setCanvas }) => {
   const {
@@ -21,7 +21,7 @@ const Scene: React.FC<{
   } = useThree();
 
   React.useEffect(() => {
-    scene.background = background.active ? new Color(background.color) : null;
+    scene.background = background ? new Color(background) : null;
   }, [scene, background]);
 
   React.useEffect(() => {
@@ -31,7 +31,24 @@ const Scene: React.FC<{
   return <>{children}</>;
 };
 
-const Canvas: React.FC<ContainerProps> = ({ children, ...props }) => {
+type InnerEditorProps = {
+  resolution?: Resolution;
+  background?: string | null;
+  durationSeconds?: number;
+  frameRate?: number;
+  autoPlay?: boolean;
+  canvas?: Omit<ContainerProps, "children">;
+};
+
+const Canvas: React.FC<InnerEditorProps> = ({
+  children,
+  resolution: resolutionProp,
+  background: backgroundProp,
+  durationSeconds: durationProp,
+  frameRate: frameRateProp,
+  autoPlay,
+  canvas,
+}) => {
   const [
     {
       mode,
@@ -42,18 +59,44 @@ const Canvas: React.FC<ContainerProps> = ({ children, ...props }) => {
       duration: { ms: durationMs },
       playStart,
     },
-    { setCanvas },
+    {
+      setCanvas,
+      setResolution,
+      setBackground,
+      setTimeRange,
+      setFrame,
+      startPlaying,
+    },
   ] = useStore();
+
+  React.useEffect(() => {
+    if (resolutionProp) setResolution(resolutionProp);
+  }, [resolutionProp, setResolution]);
+
+  React.useEffect(() => {
+    if (backgroundProp !== undefined) setBackground(backgroundProp);
+  }, [backgroundProp, setBackground]);
+
+  React.useEffect(() => {
+    if (durationProp && frameRateProp)
+      setTimeRange(durationProp, frameRateProp);
+  }, [durationProp, frameRateProp, setTimeRange]);
+
+  React.useEffect(() => {
+    if (!autoPlay) return;
+    setFrame(0);
+    startPlaying();
+  }, [autoPlay, setFrame, startPlaying]);
 
   return (
     <ThreeCanvas
-      {...props}
+      {...canvas}
       style={{
         width: `${resolution[0]}px`,
         height: `${resolution[1]}px`,
       }}
       gl={{
-        ...props.gl,
+        ...canvas?.gl,
         preserveDrawingBuffer: true,
       }}
     >
@@ -72,46 +115,29 @@ const Canvas: React.FC<ContainerProps> = ({ children, ...props }) => {
   );
 };
 
-export const Editor: React.FC<
-  ContainerProps & {
-    autoPlay?: boolean;
-    resolution?: [number, number];
-    hideUI?: boolean;
-  }
-> = ({ autoPlay, resolution, hideUI, ...canvasProps }) => {
-  const userState = React.useMemo(
-    () => ({
-      ...(autoPlay && {
-        mode: AppMode.Playing,
-        playStart: Date.now(),
-        frame: 0,
-      }),
-      ...(resolution && { resolution }),
-    }),
-    [autoPlay, resolution]
-  );
-
-  return (
-    <StoreProvider userState={userState}>
-      <div className="flex flex-col h-screen max-w-full bg-gray-50">
-        <div className="flex-1 flex overflow-hidden">
-          <div className="flex-1 overflow-hidden flex justify-center items-center p-6 flex-shrink-1">
-            <div className="overflow-auto shadow-lg box-content max-w-full max-h-full bg-alpha0 bg-center">
-              <Canvas {...canvasProps} />
-            </div>
+export const Editor: React.FC<InnerEditorProps & { hideUI?: boolean }> = ({
+  hideUI,
+  ...innerProps
+}) => (
+  <StoreProvider>
+    <div className="flex flex-col h-screen max-w-full bg-gray-50">
+      <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 overflow-hidden flex justify-center items-center p-6 flex-shrink-1">
+          <div className="overflow-auto shadow-lg box-content max-w-full max-h-full bg-alpha0 bg-center">
+            <Canvas {...innerProps} />
           </div>
-          {!hideUI && (
-            <div className="flex-shrink-0">
-              <Settings />
-            </div>
-          )}
         </div>
         {!hideUI && (
           <div className="flex-shrink-0">
-            <Timeline />
+            <Menu />
           </div>
         )}
       </div>
-    </StoreProvider>
-  );
-};
+      {!hideUI && (
+        <div className="flex-shrink-0">
+          <Timeline />
+        </div>
+      )}
+    </div>
+  </StoreProvider>
+);

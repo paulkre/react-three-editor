@@ -1,9 +1,6 @@
 import React from "react";
 import cn from "classnames";
-import { BackgroundSettings } from "./background";
-import { ResolutionSettings } from "./resolution";
-import { TimeRangeSettings } from "./time-range";
-import { RenderSettings } from "./render";
+import { RenderMenu } from "./render";
 
 export const Heading: React.FC = ({ children }) => (
   <div className="uppercase tracking-wide mb-3 select-none text-lg">
@@ -11,7 +8,7 @@ export const Heading: React.FC = ({ children }) => (
   </div>
 );
 
-export const Settings: React.FC = () => {
+export const Menu: React.FC = () => {
   const [shown, setShown] = React.useState(false);
 
   return (
@@ -23,7 +20,7 @@ export const Settings: React.FC = () => {
         )}
         onClick={() => setShown(!shown)}
       >
-        Settings
+        Menu
       </button>
       <div
         className={cn(
@@ -31,18 +28,9 @@ export const Settings: React.FC = () => {
           shown ? "max-w-7xl" : "max-w-0 translate-x-full pointer-events-none"
         )}
       >
-        <div className="py-8 bg-gray-100 rounded-3xl h-full max-h-sidebar">
-          <div className="px-8 overflow-y-auto h-full max-h-full">
-            <div className="mb-8">
-              <ResolutionSettings />
-            </div>
-            <div className="mb-8">
-              <BackgroundSettings />
-            </div>
-            <div className="mb-8">
-              <TimeRangeSettings />
-            </div>
-            <RenderSettings />
+        <div className="h-full max-h-sidebar">
+          <div className="overflow-y-auto h-full max-h-full">
+            <RenderMenu />
           </div>
         </div>
       </div>
